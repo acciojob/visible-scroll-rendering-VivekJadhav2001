@@ -1,31 +1,27 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./../styles/App.css";
 
 const App = () => {
-  // Create a large list of items
-  const items = Array.from({ length: 100 }, (_, index) => ({
-    id: index + 1,
-    title: `Item ${index + 1}`,
-    description: "Lorem ipsum dolor sit amet.",
-  }));
-
   const containerRef = useRef(null);
 
   const [scrollTop, setScrollTop] = useState(0);
 
-  // Height of each item
-  const ITEM_HEIGHT = 70;
+  // 100 items: Item 0 -> Item 99
+  const items = Array.from({ length: 100 }, (_, index) => ({
+    id: index,
+    title: `Item ${index}`,
+    description: "Lorem ipsum dolor sit amet.",
+  }));
 
-  // Height of scroll container
-  const CONTAINER_HEIGHT = 500;
+  // Scroll container is 500px
+  // 10 items are visible at a time
+  const ITEM_HEIGHT = 50;
+  const VISIBLE_ITEMS = 10;
 
-  // Calculate which items should be visible
   const startIndex = Math.floor(scrollTop / ITEM_HEIGHT);
 
-  const visibleCount = Math.ceil(CONTAINER_HEIGHT / ITEM_HEIGHT);
-
   const endIndex = Math.min(
-    startIndex + visibleCount + 1,
+    startIndex + VISIBLE_ITEMS,
     items.length
   );
 
@@ -65,12 +61,9 @@ const App = () => {
       <p>
         Suppose you have a component that renders a large list of
         items, and you want to optimize performance by only rendering
-        the visible items.
-      </p>
-
-      <p>
-        This example uses <code>useRef</code> to track the scroll
-        position and renders only the items currently visible.
+        the visible items. How would you use the useRef hook to keep
+        track of the scroll position, and only render the items that
+        are currently visible
       </p>
 
       <h3>
@@ -85,34 +78,33 @@ const App = () => {
         ref={containerRef}
         style={{
           height: "500px",
-          overflowY: "auto",
-          width: "250px",
+          overflow: "auto",
         }}
       >
-        {/* Space for items above the visible area */}
+        {/* Space occupied by items above the visible items */}
         <div style={{ height: `${topSpacerHeight}px` }} />
 
-        {/* Only visible items are rendered */}
+        {/* Only 10 visible items are rendered */}
         {visibleItems.map((item) => (
           <div
             key={item.id}
             style={{
               height: `${ITEM_HEIGHT}px`,
               boxSizing: "border-box",
-              padding: "10px 20px",
+              padding: "5px 20px",
             }}
           >
-            <h2 style={{ margin: "0 0 10px 0" }}>
+            <h2 style={{ margin: "0" }}>
               {item.title}
             </h2>
 
-            <p style={{ margin: 0 }}>
+            <p style={{ margin: "5px 0 0" }}>
               {item.description}
             </p>
           </div>
         ))}
 
-        {/* Space for items below the visible area */}
+        {/* Space occupied by items below the visible items */}
         <div style={{ height: `${bottomSpacerHeight}px` }} />
       </div>
     </div>
